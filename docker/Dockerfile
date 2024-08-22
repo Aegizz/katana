@@ -5,9 +5,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install base Dependencies
 RUN apt-get update -qq \
-	&& apt-get install -y -qq python-tk tk-dev libffi-dev libssl-dev pandoc \
+	&& apt-get install -y -qq python3-tk tk-dev libffi-dev libssl-dev pandoc \
 	libgmp3-dev libzbar-dev tesseract-ocr xsel libpoppler-cpp-dev libmpc-dev \
-	libdbus-glib-1-dev ruby libenchant-2-dev apktool nodejs groff binwalk \
+	libdbus-glib-1-dev ruby-dev libenchant-2-dev apktool nodejs groff binwalk \
 	foremost tcpflow poppler-utils exiftool steghide stegsnow bison ffmpeg \
 	libgd-dev less \
 	# Clean up for smaller images
@@ -31,17 +31,18 @@ RUN wget -O /usr/local/bin/jsteg https://github.com/lukechampine/jsteg/releases/
 RUN wget -O /usr/local/bin/slink https://github.com/lukechampine/jsteg/releases/download/v0.3.0/slink-linux-amd64 && chmod +x /usr/local/bin/slink
 
 # Download, compile and install snow
-RUN wget -O /usr/snow.tar.gz http://www.darkside.com.au/snow/snow-20130616.tar.gz
+RUN wget -O /usr/snow.tar.gz http://darkside.com.au/snow/snow-20130616.tar.gz
 WORKDIR /usr
-RUN tar -xvf snow.tar.gz
+RUN tar -zxvf /usr/snow.tar.gz  # Extract the file with gzip decompression
 WORKDIR /usr/snow-20130616/
 RUN make
 RUN cp /usr/snow-20130616/snow /usr/local/bin/snow && chmod +x /usr/local/bin/snow
 
 # Clone Katana Repository
-RUN git clone --recursive https://github.com/JohnHammond/katana.git /katana
+RUN git clone --recursive https://github.com/Aegizz/katana.git /katana
 # Install katana python dependencies
 WORKDIR /katana
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Create runtime data directory directory

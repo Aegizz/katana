@@ -45,4 +45,4 @@ else
 fi
 
 # Run katana
-python -m katana "$@"
+# python -m katana "$@"
